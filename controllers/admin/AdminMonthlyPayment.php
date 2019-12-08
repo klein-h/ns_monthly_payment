@@ -26,8 +26,12 @@ class AdminMonthlyPaymentController extends ModuleAdminController
     }
 
 
-    public function sendMail($id, $monthly, $email, $total, $phone, $name, $surname, $address, $birthday) {
+    public function sendMail($id, $monthly, $email, $total, $phone, $name, $surname, $address, $birthday, $city, $salary, $postal, $court) {
         $send = 1;
+        $is_court = "Non";
+        if ($court == 1) {
+            $is_court = "Oui";
+        }
         $query =  Db::getInstance()->Execute('UPDATE ns_monthly_payment SET send ='. (int)$send . ' where id = '. (int)$id . ';');
         Mail::Send((int)(Configuration::get('PS_LANG_DEFAULT')), // defaut language id
             'reply_msg', // email template file to be use
@@ -38,8 +42,12 @@ class AdminMonthlyPaymentController extends ModuleAdminController
                     Email du client : ". $email . " <br>
                     Numéro du client : ". $phone . "  <br>                 
                     Nom/Prénom : ". $name . " ". $surname . "<br>
-                    Addresse : ". $address . "<br>
-                    Date de naissance : ". $birthday . "                                                           
+                    Date de naissance : ". $birthday . " <br>
+                    Adresse : ". $address . "<br> 
+                    Ville : ". $city . " <br> 
+                    Code postal : ". $postal . " <br>
+                    Salaire : ". $salary . " <br> 
+                    Poursuite Judiciaire : ". $is_court . " <br>                                                                                               
                 ",
                 '{firstname}' => 'Monsieur,',
                 '{lastname}' => 'Madame',
@@ -62,7 +70,7 @@ class AdminMonthlyPaymentController extends ModuleAdminController
             $this->delete($_POST['id']);
         }
         elseif (Tools::isSubmit('submit_mail')) {
-            $this->sendMail($_POST['id'], $_POST['monthly_value'], $_POST['email'], $_POST['total'], $_POST['phone'], $_POST['name'], $_POST['surname'], $_POST['address'], $_POST['birthday']);
+            $this->sendMail($_POST['id'], $_POST['monthly_value'], $_POST['email'], $_POST['total'], $_POST['phone'], $_POST['name'], $_POST['surname'], $_POST['address'], $_POST['birthday'], $_POST['city'], $_POST['salary'], $_POST['postal'], $_POST['court']);
         }
     }
 
